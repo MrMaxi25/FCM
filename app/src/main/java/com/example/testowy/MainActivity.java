@@ -1,6 +1,7 @@
 package com.example.testowy;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,9 +15,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static final String URL_TAG = "URL_TAG";
 
-    public static final String EXTENSION_TAG = "EXTENSION_TAG";
+    public static final String MIME_TYPE_TAG = "MIME_TYPE_TAG";
 
     private ActivityMainBinding binding;
+
+    private MyViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         binding.btnVideo.setOnClickListener(this);
         binding.btnAudio.setOnClickListener(this);
         binding.btnTxt.setOnClickListener(this);
+
+        viewModel = new ViewModelProvider(this).get(MyViewModel.class);
     }
 
     @Override
@@ -63,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         final Intent intent = new Intent(this, SecondActivity.class);
         intent.putExtra(URL_TAG, url);
-        intent.putExtra(EXTENSION_TAG, mimeType);
+        intent.putExtra(MIME_TYPE_TAG, mimeType);
         startActivity(intent);
     }
 
