@@ -6,13 +6,12 @@ import androidx.lifecycle.ViewModel;
 
 public class MyViewModel extends ViewModel
 {
-    private SavedStateHandle state;
     private MutableLiveData<String> currentUrl = new MutableLiveData<>();
     private MutableLiveData<String> currentMimeType = new MutableLiveData<>();
 
-    public MyViewModel(SavedStateHandle savedStateHandle)
+    public MyViewModel()
     {
-        state = savedStateHandle;
+
     }
 
     public void selectUrl(String url)

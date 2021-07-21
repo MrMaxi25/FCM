@@ -11,7 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Testowy"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SecondActivity"></activity>
+        <activity android:name=".SecondActivity"
+            android:hardwareAccelerated="true"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -19,8 +19,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ActivityMainBinding binding;
 
-    private MyViewModel viewModel;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,8 +30,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         binding.btnVideo.setOnClickListener(this);
         binding.btnAudio.setOnClickListener(this);
         binding.btnTxt.setOnClickListener(this);
-
-        viewModel = new ViewModelProvider(this).get(MyViewModel.class);
     }
 
     @Override
