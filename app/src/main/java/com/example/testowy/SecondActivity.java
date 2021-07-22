@@ -1,15 +1,9 @@
 package com.example.testowy;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
-import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -44,9 +38,13 @@ public class SecondActivity extends AppCompatActivity {
             break;
             case "video/mp4": getVideo(url);
             break;
-            case "audio/mpeg": getAudio(url);
+            case /*"audio/mpeg"*/
+                   /* "audio/wav"*/
+                "audio/ogg"
+                    : getAudio(url);
             break;
-            case "text/plain": getText(url);
+            case /*"text/plain"*/
+                    "application/msword": getText(url);
             break;
         }
     }
@@ -58,7 +56,7 @@ public class SecondActivity extends AppCompatActivity {
         mimeType = intent.getExtras().getString(MIME_TYPE_TAG);
         viewModel.selectUrl(url);
         viewModel.selectMimeType(mimeType);
-    };
+    }
 
     private void subscribeObserver()
     {
@@ -89,42 +87,70 @@ public class SecondActivity extends AppCompatActivity {
 
     private void getVideo(String url)
     {
-        binding.webView.loadUrl(url);
-    }
-
-    private void getAudio(String url)
-    {
         String html =
             "<html>" +
                 "<head>" +
                     "<meta name=\"viewport\" content=\"width=device-width\">" +
                 "</head>" +
                 "<body>" +
-                    "<div align=\"center\">" +
-                    "<audio controls autoplay name=\"media\">" +
+                    "<video style=\"width:100%; height:100%;\">" +
+                        "<source src='" + url + "'" +
+                    "type=\"video/mp4\">" +
+                    "</video>" +
+                "</body>" +
+            "</html>";
+        binding.webView.loadData(html, "text/html", null);
+    }
+
+    private void getAudio(String url)
+    {
+        String html =
+            /*"<html>" +
+                "<head>" +
+                    "<meta name=\"viewport\" content=\"width=device-width\">" +
+                "</head>" +
+                "<body>" +
+                    "<audio style=\"width:100%; height:100%;\" controls autoplay name=\"media\">" +
                         "<source src='" + url + "'" +
                     "type=\"audio/mpeg\">" +
                     "</audio>" +
-                    "</div>" +
                 "</body>" +
-            "</html>";
-        WebSettings webSettings = binding.webView.getSettings();
-        webSettings.setDomStorageEnabled(true);
+            "</html>";*/
+
+        /*"<html>" +
+                "<head>" +
+                "<meta name=\"viewport\" content=\"width=device-width\">" +
+                "</head>" +
+                "<body>" +
+                "<audio style=\"width:100%; height:100%;\" controls autoplay name=\"media\">" +
+                "<source src='" + url + "'" +
+                "type=\"audio/x-wav\">" +
+                "</audio>" +
+                "</body>" +
+                "</html>";*/
+
+                "<html>" +
+                "<head>" +
+                "<meta name=\"viewport\" content=\"width=device-width\">" +
+                "</head>" +
+                "<body>" +
+                "<audio style=\"width:100%; height:100%;\" controls autoplay name=\"media\">" +
+                "<source src='" + url + "'" +
+                "type=\"audio/ogg\">" +
+                "</audio>" +
+                "</body>" +
+                "</html>";
         binding.webView.loadData(html, "text/html", null);
-
-        /*
-         binding.webView.setWebViewClient(new WebViewClient());
-         WebSettings webSettings = binding.webView.getSettings();
-         webSettings.setJavaScriptEnabled(true);
-         webSettings.setAllowContentAccess(true);
-         webSettings.setDomStorageEnabled(true);
-         binding.webView.loadUrl(url);
-
-         */
     }
 
     private void getText(String url)
     {
         binding.webView.loadUrl(url);
+        /*binding.webView.setWebViewClient(new WebViewClient() {
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return false;
+            }
+        });*/
     }
 }

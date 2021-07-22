@@ -36,7 +36,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         if (view.getId() == binding.btnImage.getId())
         {
-            final String url = "https://4rooms.com.pl/userdata/public/gfx/1279cded36c5a39ffac5a8b86ffa654c.jpg";
+            //final String url = "https://4rooms.com.pl/userdata/public/gfx/1279cded36c5a39ffac5a8b86ffa654c.jpg";
+            //final String url = "https://people.sc.fsu.edu/~jburkardt/data/png/lizard.png";
+            final String url = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Rotating_earth_%28large%29.gif/240px-Rotating_earth_%28large%29.gif";
             final String mimeType = "text/html";
             startSecondActivity(url, mimeType);
         }
@@ -48,14 +50,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else if (view.getId() == binding.btnAudio.getId())
         {
-            final String url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
-            final String mimeType = "audio/mpeg";
+            //final String url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+            //final String url = "https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav";
+            final String url = "https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg";
+            final String mimeType =
+                    /*"audio/mpeg";*/
+                    /*"audio/wav";*/
+                    "audio/ogg";
             startSecondActivity(url, mimeType);
         }
         else if (view.getId() == binding.btnTxt.getId())
         {
-            final String url = "http://example.com/the-text-document.txt";
-            final String mimeType = "text/plain";
+            //final String url = "http://example.com/the-text-document.txt";
+            //final String url = "https://products.groupdocs.app/editor/pl-pl/wysiwyg/WordProcessing/a4a721b1-a10f-42e9-acf9-d86b88031616/sample.doc";
+            final String url = "https://docs.google.com/document/d/1SmFEhnBdWlkW4FmzEm5vtc8DwvZQ0jva3lwer2MWKac/edit";
+            final String mimeType =
+                    /*"text/plain";*/
+                    "application/msword";
             startSecondActivity(url, mimeType);
         }
     }
