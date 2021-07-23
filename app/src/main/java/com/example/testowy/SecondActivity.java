@@ -20,8 +20,9 @@ public class SecondActivity extends AppCompatActivity {
 
     private MyViewModel viewModel;
 
-    private String url;
-    private String mimeType;
+   /* private String url;
+    private String mimeType;*/
+    private String html;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,125 +33,187 @@ public class SecondActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(MyViewModel.class);
         getData();
         subscribeObserver();
+        /*enterMimeType();*/
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        binding.webView.onPause();
+        binding.webView.destroy();
+    }
+
+    private void enterMimeType(String url, String mimeType)
+    {
         switch (mimeType)
         {
             case "text/html": getImage(url);
-            break;
+                break;
             case "video/mp4": getVideo(url);
-            break;
-            case /*"audio/mpeg"*/
-                   /* "audio/wav"*/
-                "audio/ogg"
-                    : getAudio(url);
-            break;
-            case /*"text/plain"*/
-                    "application/msword": getText(url);
-            break;
+                break;
+            case "audio/mpeg"
+                    /* "audio/wav"*/
+                    /*"audio/ogg"*/
+                    /*"audio/amr"*/
+                    : getAudio(url, mimeType);
+                break;
+            case "text/plain": getText(url);
+                break;
         }
     }
 
     private void getData()
     {
-        Intent intent = getIntent();
-        url = intent.getExtras().getString(URL_TAG);
-        mimeType = intent.getExtras().getString(MIME_TYPE_TAG);
+        final Intent intent = getIntent();
+        final String url = intent.getExtras().getString(URL_TAG);
+        final String mimeType = intent.getExtras().getString(MIME_TYPE_TAG);
         viewModel.selectUrl(url);
         viewModel.selectMimeType(mimeType);
     }
 
     private void subscribeObserver()
     {
-        final Observer<String> urlObserver = new Observer<String>() {
+        /*final Observer<String> urlObserver = new Observer<String>() {
             @Override
             public void onChanged(String urlContent) {
-                url = urlContent;
+               *//* url = urlContent;*//*
             }
         };
-        viewModel.getCurrentUrl().observe(this, urlObserver);
+        viewModel.getCurrentUrl().observe(this, urlObserver);*/
 
         final Observer<String> mimeTypeObserver = new Observer<String>() {
             @Override
             public void onChanged(String mimeTypeContent) {
-                mimeType = mimeTypeContent;
+                //mimeType = mimeTypeContent;
+                enterMimeType(viewModel.getCurrentUrl().getValue(), mimeTypeContent);
             }
         };
         viewModel.getCurrentMimeType().observe(this, mimeTypeObserver);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        return true;
+    }
+
     private void getImage(String url)
     {
-        WebSettings webSettings = binding.webView.getSettings();
+        final WebSettings webSettings = binding.webView.getSettings();
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setUseWideViewPort(true);
+        zoomControls();
         binding.webView.loadUrl(url);
     }
 
     private void getVideo(String url)
     {
-        String html =
+        html =
             "<html>" +
-                "<head>" +
-                    "<meta name=\"viewport\" content=\"width=device-width\">" +
-                "</head>" +
-                "<body>" +
-                    "<video style=\"width:100%; height:100%;\">" +
-                        "<source src='" + url + "'" +
-                    "type=\"video/mp4\">" +
-                    "</video>" +
-                "</body>" +
+            "<head>" +
+            "<meta name=\"viewport\" content=\"width=device-width\">" +
+            "</head>" +
+            "<style>" +
+            "p {padding 0; margin 0;}" +
+            "</style>" +
+            "<body>" +
+            "<video style=\"width:100%; height:100%;\">" +
+            "<source src='" + url + "'" +
+            "type=\"video/mp4\">" +
+            "</video>" +
+            "</body>" +
             "</html>";
+        zoomControls();
         binding.webView.loadData(html, "text/html", null);
     }
 
-    private void getAudio(String url)
+    private void getAudio(String url, String mimeType)
     {
-        String html =
-            /*"<html>" +
-                "<head>" +
-                    "<meta name=\"viewport\" content=\"width=device-width\">" +
-                "</head>" +
-                "<body>" +
-                    "<audio style=\"width:100%; height:100%;\" controls autoplay name=\"media\">" +
+        switch(mimeType)
+        {
+            case "audio/mpeg":
+                html = "<html>" +
+                        "<head>" +
+                        "<style>" +
+                        ".centered {" +
+                        "position: fixed;" +
+                        "top: 50%;" +
+                        "left: 50%;" +
+                        "transform: translate(-50%, -50%);}" +
+                        "</style>" +
+                        "<meta name=\"viewport\" content=\"width=device-width\">" +
+                        "</head>" +
+                        "<body>" +
+                        "<div class=\"centered\">" +
+                        "<audio controls autoplay name=\"media\">" +
                         "<source src='" + url + "'" +
-                    "type=\"audio/mpeg\">" +
-                    "</audio>" +
-                "</body>" +
-            "</html>";*/
-
-        /*"<html>" +
-                "<head>" +
-                "<meta name=\"viewport\" content=\"width=device-width\">" +
-                "</head>" +
-                "<body>" +
-                "<audio style=\"width:100%; height:100%;\" controls autoplay name=\"media\">" +
-                "<source src='" + url + "'" +
-                "type=\"audio/x-wav\">" +
-                "</audio>" +
-                "</body>" +
-                "</html>";*/
-
-                "<html>" +
-                "<head>" +
-                "<meta name=\"viewport\" content=\"width=device-width\">" +
-                "</head>" +
-                "<body>" +
-                "<audio style=\"width:100%; height:100%;\" controls autoplay name=\"media\">" +
-                "<source src='" + url + "'" +
-                "type=\"audio/ogg\">" +
-                "</audio>" +
-                "</body>" +
-                "</html>";
+                        "type=\"audio/mpeg\">" +
+                        "</audio>" +
+                        "</div>" +
+                        "</body>" +
+                        "</html>";
+                break;
+            case "audio/wav":
+                html =  "<html>" +
+                        "<head>" +
+                        "<style>" +
+                        ".centered {" +
+                        "position: fixed;" +
+                        "top: 50%;" +
+                        "left: 50%;" +
+                        "transform: translate(-50%, -50%);}" +
+                        "</style>" +
+                        "<meta name=\"viewport\" content=\"width=device-width\">" +
+                        "</head>" +
+                        "<body>" +
+                        "<div class=\"centered\">" +
+                        "<audio controls autoplay name=\"media\">" +
+                        "<source src='" + url + "'" +
+                        "type=\"audio/x-wav\">" +
+                        "</audio>" +
+                        "</div>" +
+                        "</body>" +
+                        "</html>";
+                break;
+            case "audio/ogg":
+                html = "<html>" +
+                        "<head>" +
+                        "<style>" +
+                        ".centered {" +
+                        "position: fixed;" +
+                        "top: 50%;" +
+                        "left: 50%;" +
+                        "transform: translate(-50%, -50%);}" +
+                        "</style>" +
+                        "<meta name=\"viewport\" content=\"width=device-width\">" +
+                        "</head>" +
+                        "<body>" +
+                        "<div class=\"centered\">" +
+                        "<audio controls autoplay name=\"media\">" +
+                        "<source src='" + url + "'" +
+                        "type=\"audio/ogg\">" +
+                        "</audio>" +
+                        "</div>" +
+                        "</body>" +
+                        "</html>";
+                break;
+        }
         binding.webView.loadData(html, "text/html", null);
     }
 
     private void getText(String url)
     {
+        zoomControls();
         binding.webView.loadUrl(url);
-        /*binding.webView.setWebViewClient(new WebViewClient() {
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return false;
-            }
-        });*/
+    }
+
+    private void zoomControls()
+    {
+        final WebSettings webSettings = binding.webView.getSettings();
+        webSettings.setBuiltInZoomControls(true);
     }
 }

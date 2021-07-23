@@ -50,23 +50,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else if (view.getId() == binding.btnAudio.getId())
         {
-            //final String url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+            final String url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
             //final String url = "https://www2.cs.uic.edu/~i101/SoundFiles/CantinaBand60.wav";
-            final String url = "https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg";
+            //final String url = "https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg";
+            //final String url = "http://chomikuj.pl/DarX1024/Do+kom*c3*b3rki/*c5*9amieszne+odg*c5*82osy+(format+AMR)/Cool+music,20835134.amr";
             final String mimeType =
-                    /*"audio/mpeg";*/
+                    "audio/mpeg";
                     /*"audio/wav";*/
-                    "audio/ogg";
+                    /*"audio/ogg";*/
+                    /*"audio/amr";*/
             startSecondActivity(url, mimeType);
         }
         else if (view.getId() == binding.btnTxt.getId())
         {
-            //final String url = "http://example.com/the-text-document.txt";
-            //final String url = "https://products.groupdocs.app/editor/pl-pl/wysiwyg/WordProcessing/a4a721b1-a10f-42e9-acf9-d86b88031616/sample.doc";
-            final String url = "https://docs.google.com/document/d/1SmFEhnBdWlkW4FmzEm5vtc8DwvZQ0jva3lwer2MWKac/edit";
+            final String url = "http://example.com/the-text-document.txt";
             final String mimeType =
-                    /*"text/plain";*/
-                    "application/msword";
+                    "text/plain";
             startSecondActivity(url, mimeType);
         }
     }
