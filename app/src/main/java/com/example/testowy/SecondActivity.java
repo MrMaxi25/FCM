@@ -1,14 +1,30 @@
 package com.example.testowy;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.loader.content.CursorLoader;
+
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Picture;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.example.testowy.databinding.ActivitySecondBinding;
+
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class SecondActivity extends AppCompatActivity {
 
@@ -20,8 +36,8 @@ public class SecondActivity extends AppCompatActivity {
 
     private MyViewModel viewModel;
 
-   /* private String url;
-    private String mimeType;*/
+    /*private String url;*/
+    private String mimeType;
     private String html;
 
     @Override
@@ -43,8 +59,7 @@ public class SecondActivity extends AppCompatActivity {
         binding.webView.destroy();
     }
 
-    private void enterMimeType(String url, String mimeType)
-    {
+    private void enterMimeType(String url, String mimeType) throws URISyntaxException {
         switch (mimeType)
         {
             case "text/html": getImage(url);
@@ -73,19 +88,23 @@ public class SecondActivity extends AppCompatActivity {
 
     private void subscribeObserver()
     {
-        /*final Observer<String> urlObserver = new Observer<String>() {
+        final Observer<String> urlObserver = new Observer<String>() {
             @Override
             public void onChanged(String urlContent) {
-               *//* url = urlContent;*//*
+               /* url = urlContent;*/
             }
         };
-        viewModel.getCurrentUrl().observe(this, urlObserver);*/
+        viewModel.getCurrentUrl().observe(this, urlObserver);
 
         final Observer<String> mimeTypeObserver = new Observer<String>() {
             @Override
             public void onChanged(String mimeTypeContent) {
-                //mimeType = mimeTypeContent;
-                enterMimeType(viewModel.getCurrentUrl().getValue(), mimeTypeContent);
+                /*mimeType = mimeTypeContent;*/
+                try {
+                    enterMimeType(viewModel.getCurrentUrl().getValue(), mimeTypeContent);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
             }
         };
         viewModel.getCurrentMimeType().observe(this, mimeTypeObserver);
@@ -101,14 +120,50 @@ public class SecondActivity extends AppCompatActivity {
         return true;
     }
 
-    private void getImage(String url)
+    private void getImage(String url) throws URISyntaxException
     {
-        final WebSettings webSettings = binding.webView.getSettings();
+        binding.webView.getSettings().setAllowFileAccess(true);
+        String base = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String imagePath = "file://"+ base + "/zakon.jpg";
+        String html = "<html><head></head><body> <img src=\""+ imagePath + "\"> </body></html>";
+        binding.webView.loadUrl(imagePath);
+       /* binding.webView.loadDataWithBaseURL("", html, "text/html","utf-8", "");*/
+
+        /*final String imagePath = "file://" + "/storage/emulated/0/Android/data/com.google.android.videos/files/Movies/zakon.jpg";
+        String html = "<img src=\"" + imagePath + "\">";
+        binding.webView.post(new Runnable() {
+            @Override
+            public void run() {
+                binding.webView.evaluateJavascript("postImage('" + imagePath + "')", null);
+            }
+        });
+        binding.webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);*/
+
+        /*String imagePath = "file://" + file.getAbsolutePath();
+        String html = "<html><body><img src=\"" + imagePath + "\"></body></html>";
+        binding.webView.loadDataWithBaseURL(null, html, "text/html","utf-8", null);*/
+        /*final WebSettings webSettings = binding.webView.getSettings();
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setUseWideViewPort(true);
         zoomControls();
-        binding.webView.loadUrl(url);
+        binding.webView.loadUrl(url);*/
     }
+
+    @Nullable
+    public static String getPathFromUri(Context context, Uri uri) {
+        final String DATA_COLUMN = "_data";
+        final CursorLoader loader = new CursorLoader(context, uri, new String[]{DATA_COLUMN},
+                null, null, null);
+        try (Cursor cursor = loader.loadInBackground()) {
+            final int columnIndex = cursor.getColumnIndex(DATA_COLUMN);
+            cursor.moveToFirst();
+            return cursor.getString(columnIndex);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     private void getVideo(String url)
     {
